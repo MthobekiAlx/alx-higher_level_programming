@@ -1,18 +1,24 @@
 #!/usr/bin/python3
-from calculator_1 import add, sub, mul, div
-from sys import argv
+import py_compile
+import sys
 
 if __name__ == "__main__":
-    if len(argv) != 4:
-        print("Usage:", argv[0], "<a> <operator> <b>")
-        exit(1)
+    # Load the compiled module
+    try:
+        compiled_module = py_compile.compile("hidden_4.py")
+        module_code = open(compiled_module, 'rb').read()
+    except FileNotFoundError:
+        print("Error: 'hidden_4.py' not found.")
+        sys.exit(1)
 
-    op = argv[2]
-    f = {"+": add, "-": sub, "*": mul, "/": div}
-    if op not in f:
-        print("Unknown operator. Available operators: +, -, * and /")
-        exit(1)
+    # Execute the module's code to populate its namespace
+    module_namespace = {}
+    exec(module_code, module_namespace)
 
-    a = int(argv[1])
-    b = int(argv[3])
-    print("{:d} {:s} {:d} = {:d}".format(a, op, b, f[op](a, b)))
+    # Filter and print the names
+    sorted_names = sorted(
+        (name for name in module_namespace if not name.startswith("__"))
+    )
+
+    for name in sorted_names:
+        print(name)
