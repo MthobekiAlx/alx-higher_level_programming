@@ -1,1 +1,1 @@
-My repository for higher level coding languages 
+My repository for python exceptions 
